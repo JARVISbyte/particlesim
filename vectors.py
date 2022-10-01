@@ -8,3 +8,7 @@ class Vector2D:
 
 	def __mul__(self, other: float): return Vector2D(self.x*other, self.y*other)
 	def __rmul__(self, other: float): return Vector2D(self.x*other, self.y*other)
+	def __truediv__(self, other: float): return Vector2D(self.x / other, self.y / other)
+
+	def __str__(self):
+		return f"({self.x}, {self.y})"
