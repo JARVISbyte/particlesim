@@ -1,31 +1,53 @@
 from time import sleep
 from vectors import Vector2D as Vector
 from template import PhysObject
+from interaction import Spring
 from constants import *
+
+# we need coordinate system converting: 	x-O-y -> row-O'-column
+# O'[c_x, c_y] - position of the upper-left corner of a screen (position is defined in constants.py)
+# c_x, c_y = screenCorner
+# column, row = x-c_x, -y+c_y
 
 print("Hello World!")
 
 
+objectsList = []
+interactionsList = []
 
-
+def loopThroughPairs(s: list):
+	length = len(s)
+	if length < 2:
+		return (s[0], None)
+	for l in range(length-1):
+		for r in range(l+1, length):
+			yield (s[l], s[r])
 
 def setup():
+	#global objectsList, interactionsList
 	print("Setup! It runs once on start")
-	global ObjectA
+
+	global ObjectA, ObjectB
 	ObjectA = PhysObject(pos=Vector(0,5))
-	ObjectA.netForce += ObjectA.mass * g0
+	ObjectB = PhysObject(pos=Vector(0,-5))
+
+	objectsList.append(ObjectA)
+	objectsList.append(ObjectB)
+
+	for pair in loopThroughPairs(objectsList):
+		interactionsList.append(Spring(*pair, k, l_0))
 
 
 
 
 
 def loop():
-	print(f"Loop! It runs every {timeStep} seconds")
-	if ObjectA.pos.y <= 0:
-		print(f"Pos: {ObjectA.pos}\nObject has fallen!\nStopping simulation")
-		return 1
-	print(f"Pos: {ObjectA.pos}")
-	ObjectA.update()
+	for inter in interactionsList:
+		inter.calculate()
+	for obj in objectsList:
+		obj.update(timeStep, True)
+	print("\n--- ---")
+	return 1
 	
 
 
@@ -33,11 +55,13 @@ def loop():
 
 def main():
 	setup()
-	# main loop
-	while True:
-		if loop(): 
-			break
-		sleep(timeStep)
+	try:
+		while True:
+			if not loop(): 
+				break
+			sleep(realTimeDelay)
+	except KeyboardInterrupt:
+		print("KeyboardInterrupt")
 	print("Sim is stopped. Exiting")
 
 
