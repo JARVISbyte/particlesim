@@ -20,3 +20,15 @@ class Vector2D:
 		return f"({self.x}, {self.y})"
 	
 	def normalized(self): return self/abs(self)
+	
+	def dot(self, other): 
+		if not isinstance(other, Vector2D): raise ValueError("Tried to get dot product of vector and non-vector instance")
+		return (self.x * other.x) + (self.y * other.y)
+	
+	"""def __getitem__(self, key):
+		if key == 0:
+			return self.x
+		elif key == 1:
+			return self.y
+		else:
+			raise IndexError("not valid key '{}'".format(key))"""
