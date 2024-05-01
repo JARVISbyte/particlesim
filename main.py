@@ -122,16 +122,19 @@ def setup():
 
 
 def loop():
-	for inter in interactionsList:
-		inter.calculate()
-	for obj in objectsList:
-		obj.update(timeStep, True)
-	if getGraphics: 
-		pygame.display.flip()
-		if not tracePaths: 
-			screen.fill(WHITE)
-	if getText: print("\n--- ---")
-	return 1
+    for inter in interactionsList:
+        inter.calculate()
+    for obj in objectsList:
+        obj.update(timeStep, True)
+    if getGraphics: 
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                return 0
+        pygame.display.flip()
+    if not tracePaths: 
+        screen.fill(WHITE)
+    if getText: print("\n--- ---")
+    return 1
 	
 
 
